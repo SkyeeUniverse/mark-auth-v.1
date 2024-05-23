@@ -2,8 +2,9 @@
 
 import Input from "@/components/Input";
 import axios from "axios";
-import { signIn, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { NextResponse } from "next/server";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -21,24 +22,28 @@ export default function RegisterForm() {
 
   const router = useRouter();
 
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const register = async () => {
     setLoading(true);
+    if (EMAIL_REGEX.test(email)) {
+      try {
+        await axios.post("/api/register", {
+          username,
+          email: email,
+          password,
+        });
 
-    try {
-      await axios.post("/api/register", {
-        username,
-        email,
-        password,
-      });
-
-      toast.success("Registrasi Berhasil");
-
-      router.push("/signin");
-    } catch (error: any) {
-      console.log(error);
-      toast.error(error?.response?.data);
-    } finally {
-      setLoading(false);
+        toast.success("Registrasi Berhasil");
+        router.push("/signin");
+      } catch (error: any) {
+        console.log(error);
+        toast.error(error?.response?.data);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      toast.error("Email tidak valid");
     }
   };
 
@@ -53,6 +58,7 @@ export default function RegisterForm() {
       <Input
         label="email"
         value={email}
+        type="email"
         onChange={(e) => setEmail(e.target.value)}
         disabled={loading}
       />

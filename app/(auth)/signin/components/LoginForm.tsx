@@ -17,9 +17,15 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   const router = useRouter();
 
   const login = async () => {
+    if (!EMAIL_REGEX.test(email)) {
+      toast.error("Email tidak valid");
+    }
+
     setLoading(true);
     const login = await signIn("credentials", {
       email,
@@ -44,6 +50,7 @@ export default function LoginForm() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         disabled={loading}
+        type="email"
       />
       <Input
         label="password"
