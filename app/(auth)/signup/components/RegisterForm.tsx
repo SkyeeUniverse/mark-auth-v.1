@@ -4,7 +4,6 @@ import Input from "@/components/Input";
 import axios from "axios";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { NextResponse } from "next/server";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -25,9 +24,9 @@ export default function RegisterForm() {
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const register = async () => {
-    setLoading(true);
     if (EMAIL_REGEX.test(email)) {
       try {
+        setLoading(true);
         await axios.post("/api/register", {
           username,
           email: email,

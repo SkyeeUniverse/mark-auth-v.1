@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     });
 
     if (userAlreadyExist?.id) {
-      return new NextResponse("Users telah teregistrasi", { status: 500 });
+      return new NextResponse("Email telah terdaftar", { status: 500 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 6);
